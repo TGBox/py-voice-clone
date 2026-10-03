@@ -41,6 +41,7 @@
 ## 🚀 Installation & Schnellstart
 
 ### 1. Repository klonen & Abhängigkeiten installieren
+
 ```bash
 git clone https://github.com/<Ihr-Username>/py-voice-clone.git
 cd py-voice-clone
@@ -48,11 +49,13 @@ uv sync
 ```
 
 ### 2. Neuronales Modell herunterladen (~1.9 GB)
+
 Die großen XTTS-v2 Modellgewichte werden **nicht** im Git-Repository gespeichert (Best Practice für Git & HuggingFace). Sie können das Modell auf **drei bequeme Arten** beziehen:
 
 - **Option A (Automatisch beim App-Start):** Starten Sie einfach die App (`python main.py`). Erkennt die App, dass das Modell noch fehlt, bietet sie Ihnen den 1-Klick-Download automatisch an.
 - **Option B (Über die GUI):** Öffnen Sie in der App den Reiter **„⚙ Modell & Einstellungen“** und klicken Sie auf **„📥 Modell herunterladen (~1.9 GB)“**.
 - **Option C (Über die Kommandozeile):** Führen Sie im Terminal aus:
+
   ```powershell
   uv run python download_model.py
   ```
@@ -61,11 +64,13 @@ Die großen XTTS-v2 Modellgewichte werden **nicht** im Git-Repository gespeicher
 
 **Über den Windows-Batch-Launcher (Empfohlen):**
 Doppelklicken Sie einfach auf die Datei:
+
 ```cmd
 run.bat
 ```
 
 **Oder über das Terminal (PowerShell / CMD):**
+
 ```powershell
 uv run python main.py
 ```
