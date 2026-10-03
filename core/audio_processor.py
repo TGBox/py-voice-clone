@@ -5,7 +5,7 @@ recording, device enumeration, and waveform extraction.
 """
 
 from pathlib import Path
-from typing import Tuple, List, Dict, Optional, Callable
+from typing import Tuple, List, Dict, Optional, Callable, Any, Sequence, cast
 import os
 import threading
 import numpy as np
@@ -29,7 +29,7 @@ class AudioProcessor:
             data, sr = sf.read(file_path, dtype="float32")
         except Exception:
             # Fallback to pydub for mp3, m4a, etc.
-            segment = AudioSegment.from_file(file_path)
+            segment = cast(AudioSegment, AudioSegment.from_file(file_path))
             segment = segment.set_channels(1)
             segment = segment.set_frame_rate(target_sr)
             samples = np.array(segment.get_array_of_samples(), dtype=np.float32)
@@ -61,14 +61,14 @@ class AudioProcessor:
             return float(info.duration)
         except Exception:
             try:
-                segment = AudioSegment.from_file(file_path)
+                segment = cast(AudioSegment, AudioSegment.from_file(file_path))
                 return len(segment) / 1000.0
             except Exception:
                 return 0.0
 
     @staticmethod
     def combine_audio_clips(
-        file_paths: List[str | Path],
+        file_paths: Sequence[str | Path],
         target_sr: int = 24000,
         pause_duration_sec: float = 0.3
     ) -> Tuple[np.ndarray, int]:
@@ -177,7 +177,7 @@ class AudioProcessor:
             return False
 
     @staticmethod
-    def list_input_devices() -> List[Dict[str, any]]:
+    def list_input_devices() -> List[Dict[str, Any]]:
         """List available audio input recording devices."""
         devices = []
         try:
@@ -194,7 +194,7 @@ class AudioProcessor:
         return devices
 
     @staticmethod
-    def list_output_devices() -> List[Dict[str, any]]:
+    def list_output_devices() -> List[Dict[str, Any]]:
         """List available audio playback devices."""
         devices = []
         try:

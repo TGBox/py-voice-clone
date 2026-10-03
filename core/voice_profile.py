@@ -37,6 +37,10 @@ class VoiceProfile:
         return Path(self.folder_path) / "sample.wav"
 
     @property
+    def latents_path(self) -> Path:
+        return Path(self.folder_path) / "latents.pth"
+
+    @property
     def samples_dir(self) -> Path:
         return Path(self.folder_path) / "samples"
 

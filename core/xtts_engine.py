@@ -5,7 +5,7 @@ Provides high-performance inference on CUDA/CPU with memory caching.
 """
 
 from pathlib import Path
-from typing import Tuple, Optional, Dict, Any, List
+from typing import Tuple, Optional, Dict, Any, List, Sequence, Union
 import os
 import time
 import torch
@@ -92,7 +92,7 @@ class XTTSEngine:
             torch.cuda.empty_cache()
 
     def extract_conditioning_latents(
-        self, audio_paths: str | Path | List[str | Path]
+        self, audio_paths: Union[str, Path, Sequence[Union[str, Path]]]
     ) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], str]:
         """
         Extract conditioning latents and speaker embedding from one or multiple reference audio files.
@@ -133,7 +133,7 @@ class XTTSEngine:
         language: str = "de",
         gpt_cond_latent: Optional[torch.Tensor] = None,
         speaker_embedding: Optional[torch.Tensor] = None,
-        reference_audio_path: Optional[str | Path | List[str | Path]] = None,
+        reference_audio_path: Optional[Union[str, Path, Sequence[Union[str, Path]]]] = None,
         temperature: float = 0.75,
         repetition_penalty: float = 2.0,
         speed: float = 1.0,

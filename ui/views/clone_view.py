@@ -413,8 +413,10 @@ class CloneVoiceView(QWidget):
         # Clear clip rows
         while self.clips_layout.count() > 0:
             item = self.clips_layout.takeAt(0)
-            if item is not None and item.widget():
-                item.widget().deleteLater()
+            if item is not None:
+                w = item.widget()
+                if w is not None:
+                    w.deleteLater()
 
         total_duration = sum(c["duration"] for c in self.audio_clips)
         count = len(self.audio_clips)
