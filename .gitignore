@@ -24,6 +24,7 @@ data/outputs/*
 !data/outputs/.gitkeep
 data/profiles/*
 data/prepared_ref.wav
+data/combined_preview.wav
 
 # IDE configs
 .idea/
