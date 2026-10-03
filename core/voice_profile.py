@@ -30,14 +30,24 @@ class VoiceProfile:
     sample_rate: int
     has_latents: bool
     folder_path: str
+    sample_count: int = 1
 
     @property
     def sample_audio_path(self) -> Path:
         return Path(self.folder_path) / "sample.wav"
 
     @property
-    def latents_path(self) -> Path:
-        return Path(self.folder_path) / "latents.pth"
+    def samples_dir(self) -> Path:
+        return Path(self.folder_path) / "samples"
+
+    @property
+    def reference_sample_paths(self) -> List[Path]:
+        """Return list of all stored reference sample paths, or fallback to sample.wav."""
+        if self.samples_dir.exists():
+            files = sorted(list(self.samples_dir.glob("*.wav")) + list(self.samples_dir.glob("*.mp3")))
+            if files:
+                return files
+        return [self.sample_audio_path] if self.sample_audio_path.exists() else []
 
     @property
     def metadata_path(self) -> Path:
@@ -77,7 +87,8 @@ class VoiceProfileManager:
                             duration_sec=float(data.get("duration_sec", 0.0)),
                             sample_rate=int(data.get("sample_rate", 24000)),
                             has_latents=(profile_dir / "latents.pth").exists(),
-                            folder_path=str(profile_dir)
+                            folder_path=str(profile_dir),
+                            sample_count=int(data.get("sample_count", 1))
                         )
                         profiles.append(profile)
                     except Exception as err:
@@ -102,10 +113,12 @@ class VoiceProfileManager:
         gpt_cond_latent: Optional[torch.Tensor] = None,
         speaker_embedding: Optional[torch.Tensor] = None,
         language: str = "de",
-        description: str = ""
+        description: str = "",
+        sample_count: int = 1,
+        source_audio_paths: Optional[List[str | Path]] = None
     ) -> VoiceProfile:
         """
-        Create a new voice profile folder, store sample.wav, latents.pth, and meta.json.
+        Create a new voice profile folder, store sample.wav, individual samples, latents.pth, and meta.json.
         """
         slug = self._sanitize_name(name)
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -113,10 +126,25 @@ class VoiceProfileManager:
         profile_dir = self.base_dir / profile_id
         profile_dir.mkdir(parents=True, exist_ok=True)
 
-        # Save audio sample
+        # Save primary combined audio sample
         sample_wav_path = profile_dir / "sample.wav"
         AudioProcessor.save_audio(sample_wav_path, audio_data, sample_rate)
         duration_sec = len(audio_data) / sample_rate if sample_rate > 0 else 0.0
+
+        # Save individual source sample files if provided
+        saved_samples_list = []
+        if source_audio_paths:
+            samples_subfolder = profile_dir / "samples"
+            samples_subfolder.mkdir(parents=True, exist_ok=True)
+            for idx, src_p in enumerate(source_audio_paths):
+                src_path = Path(src_p)
+                if src_path.exists():
+                    clean_orig_name = self._sanitize_name(src_path.stem)
+                    dest_name = f"sample_{idx+1:02d}_{clean_orig_name}{src_path.suffix.lower()}"
+                    dest_path = samples_subfolder / dest_name
+                    shutil.copy2(src_path, dest_path)
+                    saved_samples_list.append(dest_name)
+            sample_count = max(sample_count, len(saved_samples_list))
 
         # Save latents if provided
         has_latents = False
@@ -141,7 +169,9 @@ class VoiceProfileManager:
             "description": description,
             "duration_sec": duration_sec,
             "sample_rate": sample_rate,
-            "has_latents": has_latents
+            "has_latents": has_latents,
+            "sample_count": sample_count,
+            "samples": saved_samples_list
         }
         with open(profile_dir / "meta.json", "w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2, ensure_ascii=False)
@@ -155,7 +185,8 @@ class VoiceProfileManager:
             duration_sec=duration_sec,
             sample_rate=sample_rate,
             has_latents=has_latents,
-            folder_path=str(profile_dir)
+            folder_path=str(profile_dir),
+            sample_count=sample_count
         )
 
     def load_latents(

@@ -5,7 +5,7 @@ Provides high-performance inference on CUDA/CPU with memory caching.
 """
 
 from pathlib import Path
-from typing import Tuple, Optional, Dict, Any
+from typing import Tuple, Optional, Dict, Any, List
 import os
 import time
 import torch
@@ -92,10 +92,10 @@ class XTTSEngine:
             torch.cuda.empty_cache()
 
     def extract_conditioning_latents(
-        self, audio_path: str | Path
+        self, audio_paths: str | Path | List[str | Path]
     ) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], str]:
         """
-        Extract conditioning latents and speaker embedding from reference audio file.
+        Extract conditioning latents and speaker embedding from one or multiple reference audio files.
         Returns (gpt_cond_latent, speaker_embedding, status_message).
         """
         if not self.is_loaded or self.model is None:
@@ -103,20 +103,25 @@ class XTTSEngine:
             if not success or self.model is None:
                 return None, None, msg
 
-        audio_path = str(audio_path)
-        if not os.path.exists(audio_path):
-            return None, None, f"Audiodatei {audio_path} existiert nicht."
+        if isinstance(audio_paths, (list, tuple)):
+            paths = [str(p) for p in audio_paths]
+        else:
+            paths = [str(audio_paths)]
+
+        valid_paths = [p for p in paths if os.path.exists(p)]
+        if not valid_paths:
+            return None, None, "Keine der angegebenen Referenz-Audiodateien existiert."
 
         try:
-            print(f"Extracting conditioning latents from: {audio_path}")
-            # XTTS get_conditioning_latents handles audio preprocessing
+            print(f"Extracting conditioning latents from {len(valid_paths)} audio file(s): {valid_paths}")
+            # XTTS get_conditioning_latents accepts a list of audio files and pools speaker embeddings
             gpt_cond_latent, speaker_embedding = self.model.get_conditioning_latents(
-                audio_path=[audio_path],
+                audio_path=valid_paths,
                 gpt_cond_len=30,
                 max_ref_length=60,
                 sound_norm_refs=True
             )
-            return gpt_cond_latent, speaker_embedding, "Stimmen-Latents erfolgreich extrahiert."
+            return gpt_cond_latent, speaker_embedding, f"Stimmen-Latents erfolgreich aus {len(valid_paths)} Datei(en) extrahiert."
         except Exception as err:
             error_str = f"Fehler bei Latent-Extraktion: {str(err)}"
             print(error_str)
@@ -128,7 +133,7 @@ class XTTSEngine:
         language: str = "de",
         gpt_cond_latent: Optional[torch.Tensor] = None,
         speaker_embedding: Optional[torch.Tensor] = None,
-        reference_audio_path: Optional[str | Path] = None,
+        reference_audio_path: Optional[str | Path | List[str | Path]] = None,
         temperature: float = 0.75,
         repetition_penalty: float = 2.0,
         speed: float = 1.0,
@@ -145,7 +150,7 @@ class XTTSEngine:
 
         # If latents not provided, extract them from reference audio
         if gpt_cond_latent is None or speaker_embedding is None:
-            if not reference_audio_path or not os.path.exists(str(reference_audio_path)):
+            if not reference_audio_path:
                 return None, 0, "Keine Stimmen-Latents und keine Referenz-Audiodatei angegeben."
             latents, spk_emb, msg = self.extract_conditioning_latents(reference_audio_path)
             if latents is None or spk_emb is None:

@@ -61,6 +61,12 @@ class ProfileCard(QFrame):
         lbl_lang.setProperty("class", "badgeInfo")
         top_row.addWidget(lbl_lang)
 
+        # Sample count badge
+        count_str = f"{self.profile.sample_count} Clip{'s' if self.profile.sample_count > 1 else ''}"
+        lbl_count = QLabel(count_str, self)
+        lbl_count.setStyleSheet("background-color: #1e1b4b; color: #a78bfa; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #6366f1;")
+        top_row.addWidget(lbl_count)
+
         # Duration badge
         lbl_dur = QLabel(f"{self.profile.duration_sec:.1f}s", self)
         lbl_dur.setProperty("class", "badgeSuccess")

@@ -6,12 +6,14 @@
 
 ## ✨ Hauptfunktionen
 
-- **🚀 Zero-Shot Stimmen-Klonung:**
-  - Erstellen Sie ein dauerhaftes Stimmen-Profil aus nur 3 bis 15 Sekunden Referenz-Audio (Sprachnachricht, Interview, Hörbuch etc.).
-  - Die neuronalen Stimmen-Merkmale (*Conditioning Latents & Speaker Embeddings*) werden einmalig extrahiert und blitzschnell wiederverwendet.
+- **🚀 Multi-Sample & Zero-Shot Stimmen-Klonung:**
+  - Erstellen Sie ein dauerhaftes Stimmen-Profil aus einer oder **mehreren Audiodateien gleichzeitig** (Multi-Sample Studio).
+  - Mehrere kurze Sprachaufnahmen (z. B. 3 bis 6 Sätze mit unterschiedlicher Betonung und Tonhöhe) erhöhen die Stimmtreue und Natürlichkeit drastisch.
+  - Die neuronalen Stimmen-Merkmale (*Conditioning Latents & Speaker Embeddings*) werden aggregiert extrahiert und blitzschnell für spätere Synthesen wiederverwendet.
 
 - **🎙️ Integrierte Mikrofon-Aufnahme:**
   - Nehmen Sie Ihre eigene Stimme direkt in der App über ein beliebiges Mikrofon auf.
+  - Fügen Sie beliebig viele Mikrofon-Takes nacheinander zur Clip-Liste hinzu.
   - Mit Live-Pegelanzeige (VU-Meter), Aufnahmedauer-Timer und automatischer Vorbereitung.
 
 - **🔊 Leistungsstarke Sprachsynthese (TTS):**
@@ -20,12 +22,12 @@
   - Feineinstellung für Sprachgeschwindigkeit (*Speed*), Expressivität/Kreativität (*Temperature*) und Wiederholungsstrafe (*Repetition Penalty*).
 
 - **🎛️ Integrierter Audio-Player mit Waveform:**
-  - Direkte Wiedergabe generierter Sprache oder Referenz-Audio in der Benutzeroberfläche.
+  - Direkte Wiedergabe generierter Sprache oder kombinierter Referenz-Audio in der Benutzeroberfläche.
   - Interaktive Wellenform-Anzeige mit Timeline-Scrubbing, Loop-Wiedergabe, Lautstärkeregler und Audio-Export (WAV / MP3).
 
 - **📚 Stimmen-Bibliothek:**
-  - Übersicht aller gespeicherten Stimmen-Profile mit Such- und Filterfunktion.
-  - Hörproben-Vorschau, Export und Import von Stimmen-Profilen als portable `.zip`-Archive.
+  - Übersicht aller gespeicherten Stimmen-Profile mit Clip-Zähler, Sprach- und Dauerkennung.
+  - Such- und Filterfunktion, Hörproben-Vorschau sowie Export und Import von Stimmen-Profilen als portable `.zip`-Archive.
 
 - **🖥️ Vollbild- und Fenstermodus (F11):**
   - Nahtloser Wechsel zwischen rahmenlosem Vollbildmodus und normalem Fenstermodus über die Taste **F11** oder den Header-Button.
@@ -94,9 +96,10 @@ py-voice-clone/
 
 ---
 
-## 💡 Tipps für optimale Sprachklonung
+## 💡 Tipps für optimale Sprachklonung mit Multi-Sampling
 
-1. **Audioqualität:** Verwenden Sie eine saubere Audioaufnahme ohne laute Musik, Hall oder Störgeräusche im Hintergrund.
-2. **Optimale Dauer:** 5 bis 12 Sekunden zusammenhängende, natürliche Sprache liefern das beste Ergebnis für das Speaker Embedding.
-3. **Automatische Vorbereitung:** Nutzen Sie vor dem Klonen den Button *„Vorbereitung anwenden“*, um Stille am Anfang/Ende zu entfernen und den Pegel auf -1 dB zu normalisieren.
-4. **Exportieren & Teilen:** Sie können erstellte Stimmen jederzeit als `.zip` exportieren und auf anderen Rechnern importieren.
+1. **Mehrere verschiedene Aufnahmen kombinieren (Empfohlen):** Nutzen Sie 3 bis 6 kurze Aufnahmen (jeweils 5–10 Sekunden, Gesamtlänge idealerweise 15–45 Sekunden).
+2. **Phonetische Vielfalt & Dynamik:** Sprechen Sie in den Clips unterschiedliche Sätze (Fragesätze, Aussagesätze, ruhigere und lebendigere Passagen). Dadurch lernt das neuronale Modell alle Phoneme und Ihre authentische Tonhöhen-Dynamik.
+3. **Audioqualität & Raumakustik:** Verwenden Sie rauschfreie Aufnahmen ohne Hintergrundmusik, Nachhall oder Nebengeräusche.
+4. **Automatische Vorbereitung:** Nutzen Sie den Button *„Vorbereitung auf alle Clips anwenden“*, um Stille an den Enden automatisch abzuschneiden und alle Clips einheitlich auf -1 dB zu normalisieren.
+5. **Exportieren & Teilen:** Sie können erstellte Profile jederzeit als `.zip` sichern oder auf anderen Geräten weiterverwenden.

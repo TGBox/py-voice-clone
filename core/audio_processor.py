@@ -67,6 +67,37 @@ class AudioProcessor:
                 return 0.0
 
     @staticmethod
+    def combine_audio_clips(
+        file_paths: List[str | Path],
+        target_sr: int = 24000,
+        pause_duration_sec: float = 0.3
+    ) -> Tuple[np.ndarray, int]:
+        """
+        Load multiple audio files, resample, normalize, and concatenate them with brief pauses.
+        Returns (combined_mono_float32, target_sr).
+        """
+        clips = []
+        pause_samples = int(target_sr * pause_duration_sec)
+        pause_audio = np.zeros(pause_samples, dtype=np.float32)
+
+        for path in file_paths:
+            if not os.path.exists(str(path)):
+                continue
+            audio, sr = AudioProcessor.load_audio(path, target_sr=target_sr)
+            if len(audio) > 0:
+                audio = AudioProcessor.trim_silence(audio, sr)
+                audio = AudioProcessor.normalize_audio(audio)
+                if len(clips) > 0 and pause_samples > 0:
+                    clips.append(pause_audio)
+                clips.append(audio)
+
+        if not clips:
+            return np.array([], dtype=np.float32), target_sr
+
+        combined = np.concatenate(clips, axis=0)
+        return combined, target_sr
+
+    @staticmethod
     def normalize_audio(audio: np.ndarray, target_peak: float = 0.95) -> np.ndarray:
         """Normalize audio volume to peak level to avoid clipping and enhance presence."""
         peak = np.max(np.abs(audio))

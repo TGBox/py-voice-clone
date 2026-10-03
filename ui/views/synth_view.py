@@ -358,8 +358,9 @@ class SpeechSynthesisView(QWidget):
 
         profile = self.profile_mgr.get_profile(profile_id)
         if profile:
+            sample_count_info = f"{profile.sample_count} Clip{'s' if profile.sample_count > 1 else ''}"
             self.lbl_profile_details.setText(
-                f"Ausgewählt: {profile.name} | Dauer Referenz: {profile.duration_sec:.1f}s | "
+                f"Ausgewählt: {profile.name} ({sample_count_info}) | Dauer Referenz: {profile.duration_sec:.1f}s | "
                 f"Modell-Latents: {'Vorhanden ✓' if profile.has_latents else 'Referenz-Audio'}"
             )
             # Match language dropdown if found
