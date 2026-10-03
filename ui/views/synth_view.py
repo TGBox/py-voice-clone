@@ -97,7 +97,7 @@ class SynthesisWorker(QThread):
             language=self.language,
             gpt_cond_latent=gpt_cond,
             speaker_embedding=spk_emb,
-            reference_audio_path=self.profile.sample_audio_path if not gpt_cond else None,
+            reference_audio_path=self.profile.sample_audio_path if gpt_cond is None else None,
             temperature=self.temperature,
             repetition_penalty=self.repetition_penalty,
             speed=self.speed
