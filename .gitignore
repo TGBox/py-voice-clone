@@ -17,11 +17,13 @@ models/xtts_v2/dvae.pth
 models/xtts_v2/*.pth
 models/xtts_v2/.cache/
 
-# User-generated recordings & outputs
+# User-generated recordings & outputs & profiles
 data/recordings/*
 !data/recordings/.gitkeep
 data/outputs/*
 !data/outputs/.gitkeep
+data/profiles/*
+data/prepared_ref.wav
 
 # IDE configs
 .idea/
