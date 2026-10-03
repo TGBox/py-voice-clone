@@ -9,7 +9,7 @@ from typing import Optional
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QPushButton,
     QLabel, QStackedWidget, QStatusBar, QFrame, QButtonGroup,
-    QMenuBar, QMenu
+    QMenuBar, QMenu, QMessageBox
 )
 from PySide6.QtCore import Qt, QKeyCombination, QTimer
 from PySide6.QtGui import QKeySequence, QShortcut, QAction
@@ -55,6 +55,9 @@ class MainWindow(QMainWindow):
         self.status_timer.timeout.connect(self._update_quick_status)
         self.status_timer.start()
         self._update_quick_status()
+
+        # Check model installation shortly after window startup
+        QTimer.singleShot(700, self._check_initial_model_status)
 
     def _setup_menu_and_shortcuts(self):
         # Menu bar
@@ -279,3 +282,18 @@ class MainWindow(QMainWindow):
         else:
             self.lbl_gpu_quick.setText("🟡 CPU Modus")
             self.lbl_gpu_quick.setProperty("class", "badgeWarning")
+
+    def _check_initial_model_status(self):
+        """Prompt user on launch if neural weights are not yet downloaded."""
+        if not self.model_mgr.is_model_installed():
+            reply = QMessageBox.question(
+                self,
+                "XTTS-v2 Modell erforderlich",
+                "Das neuronale Basismodell (Coqui XTTS-v2, ca. 1.9 GB) ist auf diesem Computer noch nicht installiert.\n\n"
+                "Möchten Sie jetzt zu den Einstellungen wechseln und das Modell automatisch von HuggingFace herunterladen?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.Yes
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                self._on_nav_clicked(3)  # Switch to Settings view
+                self.view_settings._start_model_download()
