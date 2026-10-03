@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+.venv
+
+# Large model checkpoints (HuggingFace downloads)
+models/xtts_v2/model.pth
+models/xtts_v2/dvae.pth
+models/xtts_v2/*.pth
+models/xtts_v2/.cache/
+
+# User-generated recordings & outputs
+data/recordings/*
+!data/recordings/.gitkeep
+data/outputs/*
+!data/outputs/.gitkeep
+
+# IDE configs
+.idea/
+.vscode/
+*.swp

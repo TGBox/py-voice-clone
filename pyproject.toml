@@ -1,0 +1,33 @@
+[project]
+name = "py-voice-clone"
+version = "0.1.0"
+description = "VoiceClone AI Studio - Neural Voice Cloning & Speech Synthesis"
+readme = "README.md"
+authors = [
+    { name = "Daniel Rösch", email = "droesch91@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "PySide6>=6.6.0",
+    "torch>=2.2.0",
+    "torchaudio>=2.2.0",
+    "TTS>=0.22.0",
+    "transformers<4.40.0",
+    "tokenizers<0.19",
+    "huggingface-hub<1.0",
+    "sounddevice>=0.4.6",
+    "soundfile>=0.12.1",
+    "scipy>=1.11.0",
+    "numpy>=1.24.0,<2.0.0",
+    "pydub>=0.25.1",
+]
+
+[project.scripts]
+py-voice-clone = "main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pyright]
+extraPaths = ["."]

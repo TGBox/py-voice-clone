@@ -1,0 +1,10 @@
+{
+  "id": "beispielstimme_deutsch_20261002_175437",
+  "name": "Beispielstimme Deutsch",
+  "created_at": "2026-10-02T17:54:37.808537",
+  "language": "de",
+  "description": "Offizielles deutsches Referenz-Stimmenprofil von Coqui XTTS-v2",
+  "duration_sec": 3.1146666666666665,
+  "sample_rate": 24000,
+  "has_latents": true
+}
